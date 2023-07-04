@@ -18,9 +18,8 @@ $('#post').click(function () {
 
 $("body").on("click", ".delete", function() {
     const postId = $(this).closest('.post').data().id
-    render.hidePost(postId)
     model.removePost(postId)
-    // updatePage()
+    render.hidePost(postId)
 });
 
 $("body").on("click", ".delete-comment", function() {
@@ -34,7 +33,7 @@ $("body").on("click", ".comment-button", function() {
     const postId = $(this).closest('.post').data().id
     const text = $(this).closest('.post').find('input').val()
     $(this).closest('.post').find('input').val("")
-    commentId = model.addComment(postId, text)
+    const commentId = model.addComment(postId, text)
     updatePage()
     render.hideFastAndShowSlowComment(commentId)
 });

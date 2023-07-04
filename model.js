@@ -21,51 +21,54 @@ function TweeterModule () {
     ]
     let _postIdCounter = 3
     let _commentIdCounter = 7
+
+    const _generatePostId = () => "p" + _postIdCounter++;
+    const _generateCommentId = () => "c" + _commentIdCounter++;
+
+    const _findPostIndexById = (id) => {
+        return _arrayPosts.findIndex((post) => post.id === id)
+    }
+    
+    const _findCommentIndexByPostIdCommentId = (postId, commentId) => {
+        return _arrayPosts[_findPostIndexById(postId)].comments.findIndex((comment) => {
+            return comment.id === commentId
+        })
+    }
+
     const getPosts = function () {
         return _arrayPosts;
     }
     const addPost = function (text) {
-        const postId = _postIdCounter++;
         _arrayPosts.push({
             text: text,
-            id: "p" + postId,
+            id: _generatePostId(),
             comments: []
         })
     }
     const removePost = function (postId) {
-        for (postNum in _arrayPosts) {
-            if (_arrayPosts[postNum].id === postId) {
-                _arrayPosts.splice(postNum, 1)
-                return true
-            }
+        const postIndex = _findPostIndexById(postId)
+        if (postIndex != -1){
+            _arrayPosts.splice(postIndex, 1)
         }
-        return false
     }
+
     const addComment = function (postId, text) {
-        const commentId = _commentIdCounter;
-        _commentIdCounter++;
-        for (post of _arrayPosts) {
-            if (post.id === postId) {
-                post.comments.push({
-                    id: commentId,
-                    text: text
-                })
-                return commentId
-            }
+        const postIndex = _findPostIndexById(postId)
+        if (postIndex != - 1){
+            const commentId = _generateCommentId()
+            _arrayPosts[postIndex].comments.push({
+                id: commentId,
+                text: text
+            })
+            return commentId;
         }
     }
     const removeComment = function (postId, commentId) {
-        for (postNum in _arrayPosts) {
-            if (_arrayPosts[postNum].id === postId) {
-                for (commentNum in _arrayPosts[postNum].comments) {
-                    if(_arrayPosts[postNum].comments[commentNum].id === commentId) {
-                        _arrayPosts[postNum].comments.splice(commentNum, 1);
-                        return true
-                    }
-                }
-            }
+        const postIndex = _findPostIndexById(postId)
+        const commentIndex = _findCommentIndexByPostIdCommentId(postId, commentId)
+        if (postIndex != -1 && commentIndex != -1){
+            _arrayPosts[postIndex].comments.splice(commentIndex, 1)
         }
-        return false
     }
     const showPostsConsole = function () {
         console.log('-------------------------------------------------------------------------------------')
@@ -77,12 +80,12 @@ function TweeterModule () {
         }
     }
     return {
-        getPosts: getPosts,
-        addPost: addPost,
-        removePost: removePost,
-        addComment: addComment,
-        removeComment: removeComment,
-        showPostsConsole: showPostsConsole
+        getPosts,
+        addPost,
+        removePost,
+        addComment,
+        removeComment,
+        showPostsConsole
     }
 }
 
